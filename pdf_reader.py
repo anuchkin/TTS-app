@@ -28,7 +28,6 @@ class OpenPdf:
 		self.page_number = page_number
 		self.last_page_number = self.number_of_pages - self.page_number
 		self.sentences_for_voice_acting = []
-
 	
 	def text_correction(self) -> None:
 		"""
@@ -48,12 +47,9 @@ class OpenPdf:
 				simbol = f"[{i}]"
 				page_text = page_text.replace(simbol, " ")
 			
-			page_text = page_text.replace("-", "")
-
-			page_text = page_text.replace(".", "..")
-
 			page_text = page_text.replace("\xa0", " ")
-			
+			page_text = page_text.replace("\n", " ")
+
 			page_text = page_text.replace("  ", " ")
 
 			return page_text
@@ -70,6 +66,10 @@ class OpenPdf:
 			"""
 			for uncorrect, correct in correct_accent_words_dict.items():
 				page_text = page_text.replace(f" {uncorrect} ", f" {correct} ")
+				page_text = page_text.replace(f" {uncorrect}, ", f" {correct} ")
+				page_text = page_text.replace(f" {uncorrect}: ", f" {correct} ")
+
+
 			
 			page_text = page_text.replace("  ", " ")
 
@@ -102,11 +102,24 @@ class OpenPdf:
 			Returns:
 				str: Text with corrected punctuation marks
 			"""
+			page_text = page_text.replace(" - ", "")
+			page_text = page_text.replace("- ", "")
+			page_text = page_text.replace(" -", "")
+
 			page_text = page_text.replace("(", ",")
 			page_text = page_text.replace(")", ",")
+
+			page_text = page_text.replace(" , ", ", ")
+			page_text = page_text.replace(" ,", ", ")
+
 			page_text = page_text.replace("—", ",")
-			page_text = page_text.replace("—", ",")
-			page_text = page_text.replace("»", ",")
+
+			page_text = page_text.replace(" , ", ", ")
+			page_text = page_text.replace(" ,", ", ")
+
+			page_text = page_text.replace(".", "..")
+			page_text = page_text.replace(" ..", "..")
+			page_text = page_text.replace(",..", "..")
 
 			return page_text
 
@@ -136,7 +149,7 @@ class OpenPdf:
 				
 				if amount_sentences == 2:
 					sentences = page_text[:index_end_sentences+1]
-					page_text = page_text[index_end_sentences:]
+					page_text = page_text[index_end_sentences+1:]
 
 					self.sentences_for_voice_acting.append(sentences)
 					amount_sentences = 0
@@ -150,7 +163,7 @@ class OpenPdf:
 		print(pg_num)
 		print(lpg_num)
 
-		for current_page_number in range(pg_num, 21):
+		for current_page_number in range(pg_num, lpg_num):
 			current_page = self.reader.pages[current_page_number]
 
 			page_text = current_page.extract_text()
@@ -166,8 +179,9 @@ class OpenPdf:
 		return sentences_for_voice_acting
 
 
-book = OpenPdf("books/Кибердзюцу.pdf", 19)
 
+
+book = OpenPdf("books/Кибердзюцу.pdf", 27)
 sentences_for_voice_acting = book.text_correction()
 
 
@@ -177,6 +191,4 @@ for sentence in sentences_for_voice_acting[count:]:
 	print(sentence)
 	speak(sentence)
 	count += 2
-
-
 
