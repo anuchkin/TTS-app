@@ -1,8 +1,9 @@
-import time
 import torch
-
 import sounddevice as sd
 
+import threading
+
+e = threading.Event()
 
 language = 'ru'
 model_id = 'v4_ru'
@@ -18,8 +19,8 @@ model, _ = torch.hub.load(
 	speaker=model_id
 )
 
-
 model.to(device)  # gpu or cpu
+
 
 def speak(text: str):
 	audio = model.apply_tts(
@@ -29,6 +30,6 @@ def speak(text: str):
 	)
 	
 	sd.play(audio, sample_rate)
-	time.sleep((len
-	(audio) / sample_rate) + 0.5)
+	e.wait(timeout=None)
+	e.clear()
 	sd.stop()
