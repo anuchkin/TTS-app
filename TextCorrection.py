@@ -3,7 +3,7 @@ from numbers_into_words import *
 
 class TextCorrection:
 	""" A class for correcting the final text for voicing"""
-	def _remove_extra_symbols(page_text: str) -> str:
+	def __remove_extra_symbols(page_text: str) -> str:
 		"""
 		A method for removing unnecessary characters
 
@@ -24,7 +24,7 @@ class TextCorrection:
 
 		return page_text
 
-	def _fixing_words_accent(page_text: str) -> str:
+	def __fixing_words_accent(page_text: str) -> str:
 		"""
 		The placement of accents in words from the dictionary "correct_words_dict"
 
@@ -43,7 +43,7 @@ class TextCorrection:
 
 		return page_text
 
-	def _replacing_numbers_with_text(page_text: str) -> str:
+	def __replacing_numbers_with_text(page_text: str) -> str:
 		"""
 		A method for replacing different numbers with text
 
@@ -60,7 +60,7 @@ class TextCorrection:
 
 		return page_text
 
-	def _fixing_punctuation(page_text: str) -> str:
+	def __fixing_punctuation(page_text: str) -> str:
 		"""
 		A method for correcting punctuation marks
 
@@ -92,9 +92,9 @@ class TextCorrection:
 		return page_text
 
 	def improve_text(self, page_text: str) -> str:
-		page_text = self._remove_extra_symbols(page_text)
-		page_text = self._fixing_words_accent(page_text)
-		page_text = self._replacing_numbers_with_text(page_text)
-		page_text = self._fixing_punctuation(page_text)
+		page_text = self.__remove_extra_symbols(page_text)
+		page_text = self.__fixing_words_accent(page_text)
+		page_text = self.__replacing_numbers_with_text(page_text)
+		page_text = self.__fixing_punctuation(page_text)
 
 		return page_text
