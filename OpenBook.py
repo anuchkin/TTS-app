@@ -1,5 +1,4 @@
 from TextCorrection import TextCorrection
-from tts import *
 
 class OpenBook():
 	""" Class OpenPdf """
@@ -73,4 +72,5 @@ class OpenBook():
 				self.__make_sentence(page_text)
 
 			return self.sentences_voice_acting
+
 
