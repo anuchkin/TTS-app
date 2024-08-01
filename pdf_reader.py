@@ -21,7 +21,6 @@ class OpenPdf:
 		Returns:
 			None
 		"""
-
 		self.reader = PdfReader(path_to_book)
 		self.number_of_pages = len(self.reader.pages)
 
@@ -51,8 +50,7 @@ class OpenPdf:
 			
 			page_text = page_text.replace("-", "")
 
-			page_text = page_text.replace("«", " ")
-			page_text = page_text.replace("»", " ")
+			page_text = page_text.replace(".", "..")
 
 			page_text = page_text.replace("\xa0", " ")
 			
@@ -71,9 +69,9 @@ class OpenPdf:
 				str: Text with correct accents
 			"""
 			for uncorrect, correct in correct_accent_words_dict.items():
-				page_text = page_text.replace(f" {uncorrect} ", correct)
+				page_text = page_text.replace(f" {uncorrect} ", f" {correct} ")
 			
-			page_text = page_text.replace("  ", "")
+			page_text = page_text.replace("  ", " ")
 
 			return page_text
 
@@ -90,7 +88,25 @@ class OpenPdf:
 			for number, number_text in numbers_into_words_dict.items():
 				page_text = page_text.replace(number, number_text)
 			
-			page_text = page_text.replace("  ", "")
+			page_text = page_text.replace("  ", " ")
+
+			return page_text
+
+		def fixing_punctuation(page_text: str) -> str:
+			"""
+			A method for correcting punctuation marks
+
+			Args:
+				page_text (str): Text from page
+			
+			Returns:
+				str: Text with corrected punctuation marks
+			"""
+			page_text = page_text.replace("(", ",")
+			page_text = page_text.replace(")", ",")
+			page_text = page_text.replace("—", ",")
+			page_text = page_text.replace("—", ",")
+			page_text = page_text.replace("»", ",")
 
 			return page_text
 
@@ -109,12 +125,13 @@ class OpenPdf:
 			sentences = ""
 
 			while True:
-				index_end_sentences = page_text.find(".", index_end_sentences)
+				index_end_sentences = page_text.find("..", index_end_sentences)
 
 				if index_end_sentences != -1:
 					index_end_sentences += 1
 					amount_sentences += 1
 				else:
+					self.sentences_for_voice_acting.append(page_text)
 					break
 				
 				if amount_sentences == 2:
@@ -126,22 +143,6 @@ class OpenPdf:
 			
 			return self.sentences_for_voice_acting
 
-		def fixing_punctuation(page_text: str) -> str:
-			"""
-			A method for correcting punctuation marks
-
-			Args:
-				page_text (str): Text from page
-			
-			Returns:
-				str: Text with corrected punctuation marks
-			"""
-			page_text = page_text.replace("(", ",")
-			page_text = page_text.replace(")", ",")
-			page_text = page_text.replace("—", ",")
-
-			return page_text
-
 
 		pg_num = self.page_number
 		lpg_num = self.last_page_number + 1
@@ -149,7 +150,7 @@ class OpenPdf:
 		print(pg_num)
 		print(lpg_num)
 
-		for current_page_number in range(pg_num, lpg_num):
+		for current_page_number in range(pg_num, 21):
 			current_page = self.reader.pages[current_page_number]
 
 			page_text = current_page.extract_text()
@@ -157,26 +158,23 @@ class OpenPdf:
 
 			page_text = remove_extra_symbols(page_text)
 			page_text = fixing_words_accent(page_text)
-			page_text = fixing_punctuation(page_text)
 			page_text = replacing_numbers_with_text(page_text)
+			page_text = fixing_punctuation(page_text)
 
 			sentences_for_voice_acting = splitting_into_sentences(page_text)
 
 		return sentences_for_voice_acting
 
 
-
 book = OpenPdf("books/Кибердзюцу.pdf", 19)
 
 sentences_for_voice_acting = book.text_correction()
 
-# print(sentences_for_voice_acting)
-# speak(sentences_for_voice_acting)
 
 count = 0
-# print(sentences_for_voice_acting[4:6])
-for sentence in sentences_for_voice_acting[7:]:
+for sentence in sentences_for_voice_acting[count:]:
 	print(count)
+	print(sentence)
 	speak(sentence)
 	count += 2
 
