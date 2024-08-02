@@ -45,3 +45,17 @@ def save_voice(text: str):
 	)
 
 	sf.write(output_file, audio, sample_rate)
+
+def voice_and_save(text: str):
+	audio = model.apply_tts(
+			text=text,
+			speaker=speaker,
+			sample_rate=sample_rate
+	)
+
+	sf.write(output_file, audio, sample_rate)
+
+	sd.play(audio, sample_rate)
+	e.wait(timeout=None)
+	e.clear()
+	sd.stop()
