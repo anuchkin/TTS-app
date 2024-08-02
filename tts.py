@@ -1,7 +1,9 @@
+import threading
+
 import torch
 import sounddevice as sd
+import soundfile as sf
 
-import threading
 
 e = threading.Event()
 
@@ -19,10 +21,11 @@ model, _ = torch.hub.load(
 	speaker=model_id
 )
 
+output_file = 'output.wav'
 model.to(device)  # gpu or cpu
 
 
-def speak(text: str):
+def voice(text: str):
 	audio = model.apply_tts(
 		text=text,
 		speaker=speaker,
@@ -33,3 +36,12 @@ def speak(text: str):
 	e.wait(timeout=None)
 	e.clear()
 	sd.stop()
+
+def save_voice(text: str):
+	audio = model.apply_tts(
+			text=text,
+			speaker=speaker,
+			sample_rate=sample_rate
+	)
+
+	sf.write(output_file, audio, sample_rate)
