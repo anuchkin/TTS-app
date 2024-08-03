@@ -1,4 +1,5 @@
 from TextCorrection import TextCorrection
+from TextToSpeach import *
 
 class OpenBook():
 	""" Class OpenPdf """
@@ -31,23 +32,23 @@ class OpenBook():
 				break
 
 	def __make_sentence(self, page_text: str) -> None:
-		sentence = ""
+		page_sentences = []
 		count_sentence = 0
 		index_end_sentence = 0
 		
 		while True:
 			index_end_sentence = page_text.find("..", index_end_sentence)
 			if index_end_sentence != -1: # or page_text.find("?", index_end_sentence) != 1:
-				sentence = page_text[:index_end_sentence+3]
+				page_sentences.append(page_text[:index_end_sentence+3])
 				page_text = page_text[index_end_sentence+3:]
 				count_sentence += 1
 			else:
-				sentence = page_text[:index_end_sentence]
-				self.sentences_voice_acting.append(sentence)
+				page_sentences.append(page_text[:index_end_sentence])
+				self.sentences_voice_acting.append(page_sentences)
 				break
 			
 			if count_sentence:
-				self.sentences_voice_acting.append(sentence)
+				self.sentences_voice_acting.append(page_sentences)
 				count_sentence = 0
 
 	def open_book(self) -> None:
